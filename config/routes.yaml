@@ -1,0 +1,3 @@
+deepl:
+    resource: "@DeepLBundle/src/Controller"
+    type: attribute

@@ -1,0 +1,53 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+
+    _instanceof:
+        numero2\DeepLBundle\LanguageResolver\LanguageResolverInterface:
+            tags: ['numero2.deepl_language_resolver']
+            lazy: true
+
+
+    numero2_deepl.api:
+        class: numero2\DeepLBundle\Api\DeepLApi
+        public: true
+        arguments:
+            - '%contao.deepl.api_key%'
+            - '@numero2_deepl.cache'
+
+
+    numero2\DeepLBundle\Controller\BackendController:
+        arguments:
+            - '@numero2_deepl.api'
+
+
+    numero2\DeepLBundle\EventListener\DataContainer\ButtonListener:
+        public: true
+        arguments:
+            - '@numero2_deepl.api'
+            - '@request_stack'
+            - '@contao.routing.scope_matcher'
+            - '@contao.translation.translator'
+            - '%contao.backend.route_prefix%'
+            - !tagged_iterator numero2.deepl_language_resolver
+            - '@monolog.logger.contao.error'
+
+    numero2\DeepLBundle\EventListener\LoadDataContainerListener:
+        arguments:
+            - '@numero2_deepl.api'
+            - '@request_stack'
+            - '@contao.routing.scope_matcher'
+
+
+    numero2\DeepLBundle\EventSubscriber\KernelRequestSubscriber:
+        arguments:
+            - '@contao.routing.scope_matcher'
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
+
+
+    numero2\DeepLBundle\LanguageResolver\:
+        resource: "../src/LanguageResolver"
+        public: true

@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<xliff version="1.1">
+<file>
+<body>
+    <trans-unit id="deepl.translate">
+        <target>Translate to %s using DeepL</target>
+    </trans-unit>
+</body>
+</file>
+</xliff>

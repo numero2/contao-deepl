@@ -1,0 +1,36 @@
+button.deepl-translate {
+  position: relative;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  padding: unset;
+  margin-left: 0.5ch;
+  background: none;
+  border: none;
+}
+
+button.deepl-translate:after {
+  content: "";
+  display: block;
+  width: 1em;
+  height: 0.5em;
+  transform: scale(2);
+  background: url(../img/icon.svg) no-repeat scroll 50% 50%;
+  background-size: contain;
+}
+
+.widget:has(button.deepl-translate[data-loading]) {
+  pointer-events: none;
+}
+
+.widget:has(button.deepl-translate[data-loading]) button.deepl-translate:after {
+  background-image: url(../img/loading.svg);
+}
+
+html[data-color-scheme="dark"] button.deepl-translate:after {
+  background-image: url(../img/icon--dark.svg);
+}
+
+html[data-color-scheme="dark"] .widget:has(button.deepl-translate[data-loading]) button.deepl-translate:after {
+  background-image: url(../img/loading--dark.svg);
+}
