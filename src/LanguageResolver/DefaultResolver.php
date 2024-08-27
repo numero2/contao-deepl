@@ -21,19 +21,33 @@ use Contao\PageModel;
 abstract class DefaultResolver implements LanguageResolverInterface {
 
 
+    /**
+     * Map some default language codes to ones DeepL supports
+     *
+     * @param string $lang
+     *
+     * @return string
+     */
     protected function mapLangauge( string $lang ): string {
 
         if( $lang == 'en' ) {
-            $lang == 'en-US';
+            $lang = 'en-US';
         } else if( $lang == 'pt' ) {
-            $lang == 'pt_PT';
+            $lang = 'pt_PT';
         }
 
         return $lang;
     }
 
 
-    protected function getRootLangForPageID(int $id): string {
+    /**
+     * Gets the language of the root for the given page id
+     *
+     * @param int $id
+     *
+     * @return string
+     */
+    protected function getRootLangForPageID( int $id ): string {
 
         $page = PageModel::findOneBy('id', $id);
 

@@ -142,7 +142,7 @@ class ButtonListener {
 
         $scriptSrc = 'bundles/deepl/js/backend.js';
 
-        if( !in_array($scriptSrc, $GLOBALS['TL_JAVASCRIPT']) ) {
+        if( !in_array($scriptSrc, ($GLOBALS['TL_JAVASCRIPT']??[])) ) {
             $GLOBALS['TL_JAVASCRIPT'][] = $scriptSrc;
         }
 
@@ -162,10 +162,5 @@ class ButtonListener {
             '<button class="deepl-translate" title="%s"></button>'
         ,   $title
         );
-    }
-
-    private function getTargetLanguage( $dc ): string {
-
-        return 'de';
     }
 }
