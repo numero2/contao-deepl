@@ -28,7 +28,11 @@ abstract class DefaultResolver implements LanguageResolverInterface {
      *
      * @return string
      */
-    protected function mapLangauge( string $lang ): string {
+    protected function mapLangauge( ?string $lang ): string {
+
+        if( !$lang ) {
+            $lang = 'en-US';
+        }
 
         if( $lang == 'en' ) {
             $lang = 'en-US';
