@@ -159,7 +159,7 @@ class ButtonListener {
         );
 
         return sprintf(
-            '<button class="deepl-translate" title="%s"></button>'
+            '<button class="deepl-translate" title="%s" type="button"></button>'
         ,   $title
         );
     }
