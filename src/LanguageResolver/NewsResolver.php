@@ -46,7 +46,7 @@ class NewsResolver extends DefaultResolver {
 
     public function resolve( DataContainer $dc ): string {
 
-        $lang = null;
+        $lang = '';
 
         // tl_content
         if( $dc->table === ContentModel::getTable() && $dc->parentTable === NewsModel::getTable()) {
