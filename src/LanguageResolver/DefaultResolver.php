@@ -12,9 +12,11 @@
 
 namespace numero2\DeepLBundle\LanguageResolver;
 
+use \Exception;
 use Contao\ArticleModel;
 use Contao\ContentModel;
 use Contao\DataContainer;
+use Contao\Model;
 use Contao\PageModel;
 
 
@@ -62,5 +64,33 @@ abstract class DefaultResolver implements LanguageResolverInterface {
         $page->loadDetails();
 
         return $page->rootLanguage;
+    }
+
+
+    /**
+     * Finds the top parent model for the given child Model
+     *
+     * @param \Contao\Model $child
+     *
+     * @return \Contao\Model
+     */
+    protected function findRootParentForContent( Model $child ): Model {
+
+        try {
+
+            $parentModel = Model::getClassFromTable($child->ptable);
+
+        } catch( Exception $e ) {
+
+            return $child;
+        }
+
+        $parent = $parentModel::findById($child->pid);
+
+        if( $parent && $parent->pid ) {
+            return self::findRootParentForContent($parent);
+        }
+
+        return $child;
     }
 }

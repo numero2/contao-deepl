@@ -28,7 +28,7 @@ class NewsResolver extends DefaultResolver {
             return false;
         }
 
-        if( ($dc->table === ContentModel::getTable() && $dc->parentTable === NewsModel::getTable()) || $dc->table === NewsArchiveModel::getTable() ) {
+        if( ($dc->table === ContentModel::getTable() && $this->findRootParentForContent($dc->activeRecord)::class === NewsModel::class) || $dc->table === NewsArchiveModel::getTable() ) {
             return true;
         }
 
@@ -49,11 +49,17 @@ class NewsResolver extends DefaultResolver {
         $lang = '';
 
         // tl_content
-        if( $dc->table === ContentModel::getTable() && $dc->parentTable === NewsModel::getTable()) {
+        if( $dc->table === ContentModel::getTable() && in_array($dc->parentTable, [NewsModel::getTable(),ContentModel::getTable()]) ) {
 
             $content = ContentModel::findOneBy('id', $dc->id);
+            $pid = $content->pid;
 
-            $news = NewsModel::findOneBy('id', $content->pid);
+            // handling for nested Content Elements
+            if( $content->ptable == ContentModel::getTable() ) {
+                $pid = $this->findRootParentForContent($content)->id;
+            }
+
+            $news = NewsModel::findOneBy('id', $pid);
 
             if( !$news ) {
                 return '';

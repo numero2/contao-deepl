@@ -25,9 +25,12 @@ class CoreResolver extends DefaultResolver {
 
     public function supports( DataContainer $dc ): bool {
 
-        if( ($dc->table === ContentModel::getTable() && $dc->parentTable === ArticleModel::getTable()) || in_array($dc->table, [ArticleModel::getTable(), PageModel::getTable()], true)) {
+        if( ($dc->table === ContentModel::getTable() && $this->findRootParentForContent($dc->activeRecord)::class === ArticleModel::class) || in_array($dc->table, [ArticleModel::getTable(), PageModel::getTable()], true)) {
+
             return true;
+
         } else if( $dc->table === FormFieldModel::getTable() ) {
+
             return true;
         }
 
@@ -40,11 +43,17 @@ class CoreResolver extends DefaultResolver {
         $lang = '';
 
         // tl_content
-        if( $dc->table === ContentModel::getTable() && $dc->parentTable === ArticleModel::getTable()) {
+        if( $dc->table === ContentModel::getTable() && in_array($dc->parentTable, [ArticleModel::getTable(),ContentModel::getTable()]) ) {
 
             $content = ContentModel::findOneBy('id', $dc->id);
+            $pid = $content->pid;
 
-            $article = ArticleModel::findOneBy('id', $content->pid);
+            // handling for nested Content Elements
+            if( $content->ptable == ContentModel::getTable() ) {
+                $pid = $this->findRootParentForContent($content)->id;
+            }
+
+            $article = ArticleModel::findOneBy('id', $pid);
 
             if( !$article ) {
                 return '';

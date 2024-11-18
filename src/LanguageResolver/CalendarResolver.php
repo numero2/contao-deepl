@@ -12,11 +12,11 @@
 
 namespace numero2\DeepLBundle\LanguageResolver;
 
-use Contao\ContentModel;
-use Contao\DataContainer;
-use Contao\CalendarModel;
 use Contao\CalendarBundle\ContaoCalendarBundle;
 use Contao\CalendarEventsModel;
+use Contao\CalendarModel;
+use Contao\ContentModel;
+use Contao\DataContainer;
 
 
 class CalendarResolver extends DefaultResolver {
@@ -28,7 +28,7 @@ class CalendarResolver extends DefaultResolver {
             return false;
         }
 
-        if( ($dc->table === ContentModel::getTable() && $dc->parentTable === CalendarEventsModel::getTable()) || $dc->table === CalendarModel::getTable() ) {
+        if( ($dc->table === ContentModel::getTable() && $this->findRootParentForContent($dc->activeRecord)::class === CalendarEventsModel::class) || $dc->table === CalendarModel::getTable() ) {
             return true;
         }
 
@@ -52,8 +52,14 @@ class CalendarResolver extends DefaultResolver {
         if( $dc->table === ContentModel::getTable() && $dc->parentTable === CalendarEventsModel::getTable()) {
 
             $content = ContentModel::findOneBy('id', $dc->id);
+            $pid = $content->pid;
 
-            $event = CalendarEventsModel::findOneBy('id', $content->pid);
+            // handling for nested Content Elements
+            if( $content->ptable == ContentModel::getTable() ) {
+                $pid = $this->findRootParentForContent($content)->id;
+            }
+
+            $event = CalendarEventsModel::findOneBy('id', $pid);
 
             if( !$event ) {
                 return '';
