@@ -29,7 +29,7 @@ class CoreResolver extends DefaultResolver {
 
             return true;
 
-        } else if( $dc->table === FormFieldModel::getTable() ) {
+        } else if( $dc->table === FormModel::getTable() || $dc->table === FormFieldModel::getTable() ) {
 
             return true;
         }
@@ -72,6 +72,15 @@ class CoreResolver extends DefaultResolver {
 
             $page = PageModel::findOneBy('id', $dc->id);
             $lang = $this->getRootLangForPageID((int) $page->id);
+
+        // tl_form
+        } else if( $dc->table === FormModel::getTable() ) {
+
+            $form = FormModel::findOneBy('id', $dc->id);
+
+            if( $form && $form->jumpTo ) {
+                $lang = $this->getRootLangForPageID((int) $form->jumpTo);
+            }
 
         // tl_form_field
         } else if( $dc->table === FormFieldModel::getTable() && $dc->parentTable === FormModel::getTable() ) {

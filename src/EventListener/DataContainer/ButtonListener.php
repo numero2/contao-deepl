@@ -37,7 +37,7 @@ class ButtonListener {
     private iterable $languageResolvers;
     private LoggerInterface $errorLogger;
 
-    private const EXCLUDE_FIELDS = ['cssClass','cssID','class','language','urlSuffix','timeFormat','dateFormat','datimFormat'];
+    private const EXCLUDE_FIELDS = ['cssClass','cssID','class','language','urlSuffix','timeFormat','dateFormat','datimFormat','attributes','formID'];
 
 
     public function __construct( DeepLApi $api, RequestStack $requestStack, ScopeMatcher $scopeMatcher, TranslatorInterface $translator, string $backendRoutePrefix, iterable $languageResolvers, LoggerInterface $errorLogger ) {
