@@ -28,7 +28,7 @@ class NewsResolver extends DefaultResolver {
             return false;
         }
 
-        if( ($dc->table === ContentModel::getTable() && $this->findRootParentForContent($dc->activeRecord)::class === NewsModel::class) || $dc->table === NewsArchiveModel::getTable() ) {
+        if( ($dc->table === ContentModel::getTable() && $this->findRootParentForContent((new ContentModel())->setRow($dc->getCurrentRecord()))::class === NewsModel::class) || $dc->table === NewsArchiveModel::getTable() ) {
             return true;
         }
 

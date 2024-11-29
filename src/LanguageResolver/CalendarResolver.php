@@ -28,7 +28,7 @@ class CalendarResolver extends DefaultResolver {
             return false;
         }
 
-        if( ($dc->table === ContentModel::getTable() && $this->findRootParentForContent($dc->activeRecord)::class === CalendarEventsModel::class) || $dc->table === CalendarModel::getTable() ) {
+        if( ($dc->table === ContentModel::getTable() && $this->findRootParentForContent((new ContentModel())->setRow($dc->getCurrentRecord()))::class === CalendarEventsModel::class) || $dc->table === CalendarModel::getTable() ) {
             return true;
         }
 
