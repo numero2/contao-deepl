@@ -19,11 +19,11 @@ This extension allows you to translate individual fields within a DCA (Data Cont
 
 * Install the extension via Contao Manager or Composer (`composer require numero2/contao-deepl`)
 * Add your [DeepL](https://www.deepl.com/de/your-account/keys) API Key to your `.env`
-  > `DEEPL_API_KEY=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx:fx`
+  > `DEEPL_API_KEY=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`
 * Alternatively, you can add the API key to your `config/config.yaml`
 ```
 deepl:
-    api_key: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx:fx'
+    api_key: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxxx'
 ```
 
 ## Usage
