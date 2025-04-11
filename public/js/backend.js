@@ -35,11 +35,11 @@
                 }
             }
 
-            // optionWizard
-            let multiFields = this.#widget.querySelectorAll('input[type="text"][name*="\[label\]"]')
+            // wizards
+            let wizardFields = this.#widget.querySelectorAll('.tl_optionwizard input[type="text"], .tl_listwizard input[type="text"] , .tl_key_value_wizard input[type="text"]')
 
-            if( multiFields.length ) {
-                this.#field = multiFields;
+            if( wizardFields.length ) {
+                this.#field = wizardFields;
             }
         }
 
@@ -127,7 +127,6 @@
         })
         .then(response => response.json())
         .then(data => {
-
             field.setContent(data.translation);
         })
         .catch(error => console.error('Error:', error))
