@@ -36,22 +36,10 @@ class DeepLExtension extends Extension implements PrependExtensionInterface {
      */
     public function prepend( ContainerBuilder $container ): void {
 
-        $configuration = new Configuration((string) $container->getParameter('kernel.project_dir'));
+        $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $container->getExtensionConfig($this->getAlias()));
 
-        $apiKey = $config['api_key'];
-
-        // try reading api key from ENV
-        if( empty($apiKey) ) {
-
-            $envApiKey = getenv('DEEPL_API_KEY') ?: ($_ENV['DEEPL_API_KEY'] ?? null);
-
-            if( !empty($envApiKey) ) {
-                $apiKey = $envApiKey;
-            }
-        }
-
-        $container->setParameter('contao.deepl.api_key', $apiKey);
+        $container->setParameter('contao.deepl.api_key', $config['api_key']);
     }
 
 

@@ -27,7 +27,7 @@ class Configuration implements ConfigurationInterface {
             ->children()
                 ->scalarNode('api_key')
                     ->info('The DeepL API key.')
-                    ->defaultValue('')
+                    ->defaultValue('%env(DEEPL_API_KEY)%')
                 ->end()
             ->end()
         ;
