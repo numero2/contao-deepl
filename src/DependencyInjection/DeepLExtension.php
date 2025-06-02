@@ -12,6 +12,7 @@
 
 namespace numero2\DeepLBundle\DependencyInjection;
 
+use numero2\DeepLBundle\LanguageResolver\LanguageResolverInterface;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
@@ -52,6 +53,12 @@ class DeepLExtension extends Extension implements PrependExtensionInterface {
         }
 
         $container->setParameter('contao.deepl.api_key', $apiKey);
+
+        $container
+            ->registerForAutoconfiguration(LanguageResolverInterface::class)
+            ->addTag('numero2.deepl_language_resolver')
+            ->setLazy(true)
+        ;
     }
 
 
