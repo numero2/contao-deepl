@@ -6,12 +6,13 @@
  * @author    Benny Born <benny.born@numero2.de>
  * @author    Michael Bösherz <michael.boesherz@numero2.de>
  * @license   LGPL-3.0-or-later
- * @copyright Copyright (c) 2024, numero2 - Agentur für digitales Marketing GbR
+ * @copyright Copyright (c) 2025, numero2 - Agentur für digitales Marketing GbR
  */
 
 
 namespace numero2\DeepLBundle\DependencyInjection;
 
+use numero2\DeepLBundle\LanguageResolver\LanguageResolverInterface;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
@@ -40,6 +41,12 @@ class DeepLExtension extends Extension implements PrependExtensionInterface {
         $config = $this->processConfiguration($configuration, $container->getExtensionConfig($this->getAlias()));
 
         $container->setParameter('contao.deepl.api_key', $config['api_key']);
+
+        $container
+            ->registerForAutoconfiguration(LanguageResolverInterface::class)
+            ->addTag('numero2.deepl_language_resolver')
+            ->setLazy(true)
+        ;
     }
 
 

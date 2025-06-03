@@ -4,12 +4,6 @@ services:
         autoconfigure: true
 
 
-    _instanceof:
-        numero2\DeepLBundle\LanguageResolver\LanguageResolverInterface:
-            tags: ['numero2.deepl_language_resolver']
-            lazy: true
-
-
     numero2_deepl.api:
         class: numero2\DeepLBundle\Api\DeepLApi
         public: true
