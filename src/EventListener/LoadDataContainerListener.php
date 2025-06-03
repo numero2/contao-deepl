@@ -28,7 +28,7 @@ class LoadDataContainerListener {
     private RequestStack $requestStack;
     private ScopeMatcher $scopeMatcher;
 
-    private const EXCLUDE_TABLES = ['tl_user','tl_favorites','tl_comments'];
+    private const EXCLUDE_TABLES = ['tl_user','tl_favorites','tl_comments','tl_undo','tl_opt_in','tl_log'];
 
 
     public function __construct( DeepLApi $api, RequestStack $requestStack, ScopeMatcher $scopeMatcher ) {
