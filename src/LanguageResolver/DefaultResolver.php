@@ -18,13 +18,19 @@ use Contao\ContentModel;
 use Contao\DataContainer;
 use Contao\Model;
 use Contao\PageModel;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 
 abstract class DefaultResolver implements LanguageResolverInterface {
 
+    protected ParameterBagInterface $parameterBag;
 
+    public function __construct(ParameterBagInterface $parameterBag)
+    {
+        $this->parameterBag = $parameterBag;
+    }
     /**
-     * Map some default language codes to ones DeepL supports
+     * Map some default language codes to ones DeepL supports (with support for user-defined preferences)
      *
      * @param string $lang
      *
@@ -36,6 +42,16 @@ abstract class DefaultResolver implements LanguageResolverInterface {
             $lang = 'en-US';
         }
 
+        $prefLang = $this->parameterBag->get('contao.deepl.pref_lang');
+
+        if ($prefLang && strpos($prefLang, ':') !== false) {
+            $mappings = $this->parsePrefLangConfig($prefLang);
+
+            if (isset($mappings[$lang])) {
+                return $mappings[$lang];
+            }
+        }
+
         if( $lang == 'en' ) {
             $lang = 'en-US';
         } else if( $lang == 'pt' ) {
@@ -45,7 +61,29 @@ abstract class DefaultResolver implements LanguageResolverInterface {
         return $lang;
     }
 
+    /**
+     * Parse the pref_lang configuration string into an array
+     * Supports both single mapping 'en:en-GB' and multiple mappings 'en:en-GB,pt:pt-BR'
+     *
+     * @param string $prefLangConfig
+     * @return array
+     */
+    private function parsePrefLangConfig(string $prefLangConfig): array
+    {
+        $mappings = [];
 
+        $pairs = explode(',', $prefLangConfig);
+
+        foreach ($pairs as $pair) {
+            $pair = trim($pair);
+            if (strpos($pair, ':') !== false) {
+                [$source, $target] = explode(':', $pair, 2);
+                $mappings[trim($source)] = trim($target);
+            }
+        }
+
+        return $mappings;
+    }
     /**
      * Gets the language of the root for the given page id
      *
