@@ -29,7 +29,9 @@ deepl:
 ```
 deepl:
     api_key: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxxx'
-    pref_lang: 'en:en-GB,pt:pt-BR'
+    pref_lang:
+      en:en-GB
+      pt:pt-BR
 ```
 ## Usage
 
