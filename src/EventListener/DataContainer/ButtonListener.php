@@ -124,7 +124,7 @@ class ButtonListener {
                 continue;
             }
 
-            if( !empty($config['eval']['rgxp']) ) {
+            if( !empty($config['eval']['rgxp']) || ($config['eval']['rte']??'') === 'ace' ) {
                 continue;
             }
 
