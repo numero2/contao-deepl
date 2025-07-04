@@ -45,3 +45,5 @@ services:
     numero2\DeepLBundle\LanguageResolver\:
         resource: "../src/LanguageResolver"
         public: true
+        arguments:
+            $parameterBag: '@parameter_bag'

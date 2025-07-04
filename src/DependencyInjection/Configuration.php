@@ -29,6 +29,13 @@ class Configuration implements ConfigurationInterface {
                     ->info('The DeepL API key.')
                     ->defaultValue('%env(DEEPL_API_KEY)%')
                 ->end()
+                ->arrayNode('pref_lang')
+                    ->info('Language preference mapping with source language as key and target language as value')
+                    ->defaultValue([])
+                    ->useAttributeAsKey('source_lang')
+                    ->scalarPrototype()
+                    ->end()
+                ->end()
             ->end()
         ;
 

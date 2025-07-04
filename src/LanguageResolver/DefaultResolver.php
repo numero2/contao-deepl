@@ -18,13 +18,19 @@ use Contao\ContentModel;
 use Contao\DataContainer;
 use Contao\Model;
 use Contao\PageModel;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 
 abstract class DefaultResolver implements LanguageResolverInterface {
 
+    protected ParameterBagInterface $parameterBag;
 
+    public function __construct(ParameterBagInterface $parameterBag)
+    {
+        $this->parameterBag = $parameterBag;
+    }
     /**
-     * Map some default language codes to ones DeepL supports
+     * Map some default language codes to ones DeepL supports (with support for user-defined preferences)
      *
      * @param string $lang
      *
@@ -36,6 +42,12 @@ abstract class DefaultResolver implements LanguageResolverInterface {
             $lang = 'en-US';
         }
 
+        $prefLangMappings = $this->parameterBag->get('contao.deepl.pref_lang');
+
+        if (is_array($prefLangMappings) && isset($prefLangMappings[$lang])) {
+            return $prefLangMappings[$lang];
+        }
+
         if( $lang == 'en' ) {
             $lang = 'en-US';
         } else if( $lang == 'pt' ) {
@@ -44,7 +56,6 @@ abstract class DefaultResolver implements LanguageResolverInterface {
 
         return $lang;
     }
-
 
     /**
      * Gets the language of the root for the given page id

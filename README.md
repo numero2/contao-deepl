@@ -25,7 +25,14 @@ This extension allows you to translate individual fields within a DCA (Data Cont
 deepl:
     api_key: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxxx'
 ```
-
+* A preferred mapping can be created for language variants (e.g. British English en-GB, Brazilian Portuguese pt-BR, etc.). The exact language code to be used can be found at Deepl.com.
+```
+deepl:
+    api_key: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxxx'
+    pref_lang:
+      en:en-GB
+      pt:pt-BR
+```
 ## Usage
 
 After installation, each field that can be translated will display a small DeepL translation icon <img src="public/img/icon.svg" width="14" height="14" alt="DeepL Logo"> next to its label. Once clicked, DeepL will automatically translate the text in the field to match the language of your current page settings.
