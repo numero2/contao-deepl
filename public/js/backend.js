@@ -148,7 +148,7 @@
 
             document.addEventListener('keydown',(e)=> {
 
-                if( e.altKey && e.key === 't') {
+                if( e.altKey && e.keyCode === 84) {
 
                     e.preventDefault();
                     console.info('DeepL: Translating all Widgets');
