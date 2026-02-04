@@ -6,7 +6,7 @@
  * @author    Benny Born <benny.born@numero2.de>
  * @author    Michael Bösherz <michael.boesherz@numero2.de>
  * @license   LGPL-3.0-or-later
- * @copyright Copyright (c) 2024, numero2 - Agentur für digitales Marketing GbR
+ * @copyright Copyright (c) 2026, numero2 - Agentur für digitales Marketing GbR
  */
 
 
@@ -73,6 +73,10 @@ class NewsResolver extends DefaultResolver {
         } elseif( $dc->table === NewsModel::getTable() ) {
 
             $news = NewsModel::findOneBy('id', $dc->id);
+
+            if( !$news ) {
+                return '';
+            }
 
             $archive = NewsArchiveModel::findOneBy('id', $news->pid);
 

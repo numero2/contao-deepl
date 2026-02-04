@@ -23,12 +23,16 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 abstract class DefaultResolver implements LanguageResolverInterface {
 
+
     protected ParameterBagInterface $parameterBag;
+
 
     public function __construct(ParameterBagInterface $parameterBag)
     {
         $this->parameterBag = $parameterBag;
     }
+
+
     /**
      * Map some default language codes to ones DeepL supports (with support for user-defined preferences)
      *
@@ -56,6 +60,7 @@ abstract class DefaultResolver implements LanguageResolverInterface {
 
         return $lang;
     }
+
 
     /**
      * Gets the language of the root for the given page id
