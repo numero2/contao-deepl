@@ -79,7 +79,7 @@ abstract class DefaultResolver implements LanguageResolverInterface {
 
         $page->loadDetails();
 
-        return $page->rootLanguage;
+        return $page->rootLanguage ?? '';
     }
 
 
