@@ -118,7 +118,9 @@
 
         button.dataset.loading = true;
 
-        fetch(`${window.DeepL.base}/deepl/translate?lang=${window.DeepL.target}`, {
+        const source = window.DeepL.source ? `&source=${encodeURIComponent(window.DeepL.source)}` : '';
+
+        fetch(`${window.DeepL.base}/deepl/translate?lang=${encodeURIComponent(window.DeepL.target)}${source}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

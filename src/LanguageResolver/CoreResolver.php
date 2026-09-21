@@ -38,9 +38,12 @@ class CoreResolver extends DefaultResolver {
     }
 
 
-    public function resolve( DataContainer $dc ): string {
+    /**
+     * {@inheritdoc}
+     */
+    protected function resolvePageId( DataContainer $dc ): ?int {
 
-        $lang = '';
+        $id = 0;
 
         // tl_content
         if( $dc->table === ContentModel::getTable() && in_array($dc->parentTable, [ArticleModel::getTable(),ContentModel::getTable()]) ) {
@@ -56,22 +59,22 @@ class CoreResolver extends DefaultResolver {
             $article = ArticleModel::findOneBy('id', $pid);
 
             if( !$article ) {
-                return '';
+                return null;
             }
 
-            $lang = $this->getRootLangForPageID((int) $article->pid);
+            $id = (int) $article->pid;
 
         // tl_article
         } elseif( $dc->table === ArticleModel::getTable() ) {
 
             $article = ArticleModel::findOneBy('id', $dc->id);
-            $lang = $this->getRootLangForPageID((int) $article->pid);
+            $id = (int) $article->pid;
 
         // tl_page
         } elseif( $dc->table === PageModel::getTable() ) {
 
             $page = PageModel::findOneBy('id', $dc->id);
-            $lang = $this->getRootLangForPageID((int) $page->id);
+            $id = (int) $page->id;
 
         // tl_form
         } else if( $dc->table === FormModel::getTable() ) {
@@ -79,7 +82,7 @@ class CoreResolver extends DefaultResolver {
             $form = FormModel::findOneBy('id', $dc->id);
 
             if( $form && $form->jumpTo ) {
-                $lang = $this->getRootLangForPageID((int) $form->jumpTo);
+                $id = (int) $form->jumpTo;
             }
 
         // tl_form_field
@@ -89,10 +92,10 @@ class CoreResolver extends DefaultResolver {
             $form = FormModel::findOneBy('id', $formField->pid);
 
             if( $form && $form->jumpTo ) {
-                $lang = $this->getRootLangForPageID((int) $form->jumpTo);
+                $id = (int) $form->jumpTo;
             }
         }
 
-        return parent::mapLangauge($lang);
+        return $id;
     }
 }

@@ -44,9 +44,12 @@ class NewsResolver extends DefaultResolver {
     }
 
 
-    public function resolve( DataContainer $dc ): string {
+    /**
+     * {@inheritdoc}
+     */
+    protected function resolvePageId( DataContainer $dc ): ?int {
 
-        $lang = '';
+        $id = 0;
 
         // tl_content
         if( $dc->table === ContentModel::getTable() && in_array($dc->parentTable, [NewsModel::getTable(),ContentModel::getTable()]) ) {
@@ -62,12 +65,12 @@ class NewsResolver extends DefaultResolver {
             $news = NewsModel::findOneBy('id', $pid);
 
             if( !$news ) {
-                return '';
+                return null;
             }
 
             $archive = NewsArchiveModel::findOneBy('id', $news->pid);
 
-            $lang = $this->getRootLangForPageID((int) $archive->jumpTo);
+            $id = (int) $archive->jumpTo;
 
         // tl_news
         } elseif( $dc->table === NewsModel::getTable() ) {
@@ -75,24 +78,24 @@ class NewsResolver extends DefaultResolver {
             $news = NewsModel::findOneBy('id', $dc->id);
 
             if( !$news ) {
-                return '';
+                return null;
             }
 
             $archive = NewsArchiveModel::findOneBy('id', $news->pid);
 
             if( !$archive ) {
-                return '';
+                return null;
             }
 
-            $lang = $this->getRootLangForPageID((int) $archive->jumpTo);
+            $id = (int) $archive->jumpTo;
 
         // tl_news_archive
         } elseif( $dc->table === NewsArchiveModel::getTable() ) {
 
             $archive = NewsArchiveModel::findOneBy('id', $dc->id);
-            $lang = $this->getRootLangForPageID((int) $archive->jumpTo);
+            $id = (int) $archive->jumpTo;
         }
 
-        return parent::mapLangauge($lang);
+        return $id;
     }
 }
