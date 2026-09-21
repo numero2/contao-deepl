@@ -14,22 +14,27 @@ namespace numero2\DeepLBundle\Api;
 
 use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
 use Contao\Input;
+use Contao\CoreBundle\Monolog\ContaoContext;
+use DeepL\DeepLException;
 use DeepL\Translator;
+use Psr\Log\LoggerInterface;
 use Symfony\Contracts\Cache\CacheInterface;
 
 
 class DeepLApi {
 
 
-    private string $apiKey = '';
+    private ?string $apiKey = '';
     private CacheInterface $cache;
-    private Translator $translator;
+    private ?Translator $translator = null;
+    private LoggerInterface $errorLogger;
 
 
-    public function __construct( string $apiKey, CacheInterface $cache ) {
+    public function __construct( ?string $apiKey, CacheInterface $cache, LoggerInterface $errorLogger ) {
 
         $this->apiKey = $apiKey;
         $this->cache = $cache;
+        $this->errorLogger = $errorLogger;
 
         if( $this->apiKey ) {
             $this->translator = new Translator($this->apiKey);
@@ -54,7 +59,15 @@ class DeepLApi {
 
         if( !$cached->isHit() ) {
 
-            $translation = $this->translator->translateText($text, $sourceLang, $targetLang);
+            try {
+
+                $translation = $this->translator->translateText($text, $sourceLang, $targetLang);
+
+            } catch( DeepLException $e ) {
+
+                $this->logException($e, __METHOD__);
+                return '';
+            }
 
             if( $translation ) {
 
@@ -78,7 +91,15 @@ class DeepLApi {
 
         if( !$cached->isHit() ) {
 
-            $languages = $this->translator->getTargetLanguages();
+            try {
+
+                $languages = $this->translator->getTargetLanguages();
+
+            } catch( DeepLException $e ) {
+
+                $this->logException($e, __METHOD__);
+                return [];
+            }
 
             if( $languages ) {
 
@@ -88,6 +109,15 @@ class DeepLApi {
             }
         }
 
-        return $cached->get()??'';
+        return $cached->get()??[];
+    }
+
+
+    private function logException( DeepLException $e, string $method ): void {
+
+        $this->errorLogger->error(
+            sprintf('DeepL API request failed: %s', $e->getMessage())
+        ,   ['contao' => new ContaoContext($method, ContaoContext::ERROR)]
+        );
     }
 }

@@ -1,12 +1,14 @@
 <?xml version="1.0"?>
 <xliff version="1.1">
-<file source-language="en">
+<file source-language="en" target-language="es">
 <body>
     <trans-unit id="deepl.translate">
         <source>Translate to %s using DeepL</source>
+        <target>Traducir a %s con DeepL</target>
     </trans-unit>
     <trans-unit id="deepl.missing_api_key">
         <source><![CDATA[No DeepL API key has been configured yet. Please add the key as <code>DEEPL_API_KEY</code> to your <code>.env</code> or as <code>deepl.api_key</code> to your <code>config/config.yaml</code>.]]></source>
+        <target><![CDATA[Todavía no se ha configurado ninguna clave API de DeepL. Añada la clave como <code>DEEPL_API_KEY</code> en su <code>.env</code> o como <code>deepl.api_key</code> en su <code>config/config.yaml</code>.]]></target>
     </trans-unit>
 </body>
 </file>

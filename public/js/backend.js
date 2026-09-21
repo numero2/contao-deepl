@@ -125,7 +125,14 @@
             },
             body: JSON.stringify({ content: content })
         })
-        .then(response => response.json())
+        .then(response => response.json().then(data => {
+
+            if( !response.ok || data.translation === undefined || data.translation === null ) {
+                throw new Error(data.error ?? `HTTP ${response.status}`);
+            }
+
+            return data;
+        }))
         .then(data => {
             field.setContent(data.translation);
         })

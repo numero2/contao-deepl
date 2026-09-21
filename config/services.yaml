@@ -10,6 +10,7 @@ services:
         arguments:
             - '%contao.deepl.api_key%'
             - '@numero2_deepl.cache'
+            - '@monolog.logger.contao.error'
 
 
     numero2\DeepLBundle\Controller\BackendController:
@@ -33,6 +34,11 @@ services:
             - '@numero2_deepl.api'
             - '@request_stack'
             - '@contao.routing.scope_matcher'
+
+    numero2\DeepLBundle\EventListener\MessagesListener:
+        arguments:
+            - '@numero2_deepl.api'
+            - '@contao.translation.translator'
 
 
     numero2\DeepLBundle\EventSubscriber\KernelRequestSubscriber:

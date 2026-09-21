@@ -36,9 +36,17 @@ class BackendController extends AbstractController {
     #[Route('%contao.backend.route_prefix%/deepl/translate', name: 'deepl_translate')]
     public function translate( Request $request ): JsonResponse {
 
-        $lang = $request->query->get('lang');
+        if( !$this->api->isActive() ) {
+            return new JsonResponse(['error' => 'No DeepL API key configured'], Response::HTTP_SERVICE_UNAVAILABLE);
+        }
+
+        $lang = (string) $request->query->get('lang', '');
         $decoded = json_decode($request->getContent(), true);
         $content = $decoded['content'] ?? '';
+
+        if( $lang === '' || $content === '' || $content === [] ) {
+            return new JsonResponse(['error' => 'Missing parameter "lang" or "content"'], Response::HTTP_BAD_REQUEST);
+        }
 
         if( is_array($content) ) {
             $translation = $this->api->translate(json_encode($content), $lang);
@@ -46,7 +54,11 @@ class BackendController extends AbstractController {
 
         } else {
 
-            $translation = $this->api->translate($content, $lang);
+            $translation = $this->api->translate((string) $content, $lang);
+        }
+
+        if( $translation === '' || $translation === null ) {
+            return new JsonResponse(['error' => 'Translation failed', 'lang' => $lang], Response::HTTP_BAD_GATEWAY);
         }
 
 
