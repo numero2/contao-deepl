@@ -11,7 +11,7 @@ This extension allows you to translate individual fields within a DCA (Data Cont
 
 ## System requirements
 
-* [Contao 5.x](https://github.com/contao/contao)
+* [Contao 5.3](https://github.com/contao/contao) (or newer)
 * [DeepL](https://www.deepl.com/de/your-account/keys) API Key (free or paid plan)
 
 
