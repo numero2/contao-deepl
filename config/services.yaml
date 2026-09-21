@@ -47,3 +47,6 @@ services:
         public: true
         arguments:
             $parameterBag: '@parameter_bag'
+
+parameters:
+    env(DEEPL_API_KEY): ~
