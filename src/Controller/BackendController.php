@@ -41,6 +41,7 @@ class BackendController extends AbstractController {
         }
 
         $lang = (string) $request->query->get('lang', '');
+        $sourceLang = (string) $request->query->get('source', '') ?: null;
         $decoded = json_decode($request->getContent(), true);
         $content = $decoded['content'] ?? '';
 
@@ -49,12 +50,12 @@ class BackendController extends AbstractController {
         }
 
         if( is_array($content) ) {
-            $translation = $this->api->translate(json_encode($content), $lang);
+            $translation = $this->api->translate(json_encode($content), $lang, $sourceLang);
             $translation = json_decode($translation,true);
 
         } else {
 
-            $translation = $this->api->translate((string) $content, $lang);
+            $translation = $this->api->translate((string) $content, $lang, $sourceLang);
         }
 
         if( $translation === '' || $translation === null ) {

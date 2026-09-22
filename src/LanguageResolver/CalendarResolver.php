@@ -44,9 +44,12 @@ class CalendarResolver extends DefaultResolver {
     }
 
 
-    public function resolve( DataContainer $dc ): string {
+    /**
+     * {@inheritdoc}
+     */
+    protected function resolvePageId( DataContainer $dc ): ?int {
 
-        $lang = '';
+        $id = 0;
 
         // tl_content
         if( $dc->table === ContentModel::getTable() && $dc->parentTable === CalendarEventsModel::getTable()) {
@@ -62,12 +65,12 @@ class CalendarResolver extends DefaultResolver {
             $event = CalendarEventsModel::findOneBy('id', $pid);
 
             if( !$event ) {
-                return '';
+                return null;
             }
 
             $calendar = CalendarModel::findOneBy('id', $event->pid);
 
-            $lang = $this->getRootLangForPageID((int) $calendar->jumpTo);
+            $id = (int) $calendar->jumpTo;
 
         // tl_calendar_events
         } elseif( $dc->table === CalendarEventsModel::getTable() ) {
@@ -75,24 +78,24 @@ class CalendarResolver extends DefaultResolver {
             $event = CalendarEventsModel::findOneBy('id', $dc->id);
 
             if( !$event ) {
-                return '';
+                return null;
             }
 
             $caelndar = CalendarModel::findOneBy('id', $event->pid);
 
             if( !$caelndar ) {
-                return '';
+                return null;
             }
 
-            $lang = $this->getRootLangForPageID((int) $caelndar->jumpTo);
+            $id = (int) $caelndar->jumpTo;
 
         // tl_calendar
         } elseif( $dc->table === CalendarModel::getTable() ) {
 
             $calendar = CalendarModel::findOneBy('id', $dc->id);
-            $lang = $this->getRootLangForPageID((int) $calendar->jumpTo);
+            $id = (int) $calendar->jumpTo;
         }
 
-        return parent::mapLangauge($lang);
+        return $id;
     }
 }

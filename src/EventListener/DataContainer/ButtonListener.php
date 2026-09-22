@@ -17,6 +17,7 @@ use Contao\CoreBundle\Routing\ScopeMatcher;
 use Contao\DataContainer;
 use Contao\Template;
 use numero2\DeepLBundle\Api\DeepLApi;
+use numero2\DeepLBundle\LanguageResolver\SourceLanguageResolverInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Intl\Locales;
@@ -27,6 +28,7 @@ class ButtonListener {
 
 
     private string $targetLang = '';
+    private string $sourceLang = '';
     private array $locales;
 
     private DeepLApi $api;
@@ -76,6 +78,14 @@ class ButtonListener {
             if( $resolver->supports($dc) ) {
 
                 $this->targetLang = $resolver->resolve($dc);
+
+                // The language the record is translated FROM, needed to pick a
+                // glossary. Optional: a resolver written before this interface
+                // existed simply contributes none.
+                if( $resolver instanceof SourceLanguageResolverInterface ) {
+                    $this->sourceLang = $resolver->resolveSource($dc);
+                }
+
                 break;
             }
         }
@@ -147,7 +157,12 @@ class ButtonListener {
         }
 
         // add inline-script to TL_MOOTOOLS since there is no other way to add inline-scripts to backend
-        $settings = Template::generateInlineScript("window.DeepL = { base: '".$this->backendRoutePrefix."', target: '".$this->targetLang."' };");
+        // The source travels to the client the same way the target already
+        // does — the resolvers need the DataContainer, which only exists while
+        // the edit mask is rendered, so the controller cannot resolve it later.
+        // It is not a trust boundary: the value only picks a glossary out of the
+        // server-side `glossaries` map, and an unknown pair yields none.
+        $settings = Template::generateInlineScript("window.DeepL = { base: '".$this->backendRoutePrefix."', target: '".$this->targetLang."', source: '".$this->sourceLang."' };");
 
         if( !in_array($settings, ($GLOBALS['TL_MOOTOOLS']??[])) ) {
             $GLOBALS['TL_MOOTOOLS'][] = $settings;
