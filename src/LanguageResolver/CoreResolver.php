@@ -20,7 +20,7 @@ use Contao\FormModel;
 use Contao\PageModel;
 
 
-class CoreResolver extends DefaultResolver {
+class CoreResolver extends DefaultResolver implements TableAwareResolverInterface {
 
 
     public function supports( DataContainer $dc ): bool {
@@ -35,6 +35,19 @@ class CoreResolver extends DefaultResolver {
         }
 
         return false;
+    }
+
+
+    /**
+     * {@inheritdoc}
+     */
+    public function supportsTable( string $table, ?string $parentTable=null ): bool {
+
+        if( $table === ContentModel::getTable() ) {
+            return $parentTable === null || $parentTable === ArticleModel::getTable();
+        }
+
+        return in_array($table, [PageModel::getTable(), ArticleModel::getTable(), FormModel::getTable(), FormFieldModel::getTable()], true);
     }
 
 

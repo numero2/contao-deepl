@@ -18,6 +18,7 @@ use Contao\DataContainer;
 use Contao\Template;
 use numero2\DeepLBundle\Api\DeepLApi;
 use numero2\DeepLBundle\LanguageResolver\SourceLanguageResolverInterface;
+use numero2\DeepLBundle\Translation\TranslatableFieldClassifier;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Intl\Locales;
@@ -38,11 +39,10 @@ class ButtonListener {
     private string $backendRoutePrefix;
     private iterable $languageResolvers;
     private LoggerInterface $errorLogger;
+    private TranslatableFieldClassifier $fieldClassifier;
 
-    private const EXCLUDE_FIELDS = ['cssClass','cssID','class','language','urlSuffix','timeFormat','dateFormat','datimFormat','attributes','formID'];
 
-
-    public function __construct( DeepLApi $api, RequestStack $requestStack, ScopeMatcher $scopeMatcher, TranslatorInterface $translator, string $backendRoutePrefix, iterable $languageResolvers, LoggerInterface $errorLogger ) {
+    public function __construct( DeepLApi $api, RequestStack $requestStack, ScopeMatcher $scopeMatcher, TranslatorInterface $translator, string $backendRoutePrefix, iterable $languageResolvers, LoggerInterface $errorLogger, TranslatableFieldClassifier $fieldClassifier ) {
 
         $this->api = $api;
         $this->requestStack = $requestStack;
@@ -51,6 +51,7 @@ class ButtonListener {
         $this->backendRoutePrefix = $backendRoutePrefix;
         $this->languageResolvers = $languageResolvers;
         $this->errorLogger = $errorLogger;
+        $this->fieldClassifier = $fieldClassifier;
 
         $this->locales = Locales::getNames();
     }
@@ -124,20 +125,7 @@ class ButtonListener {
         }
 
         // add translate buttons to all eligible fields
-        foreach( $GLOBALS['TL_DCA'][$dc->table]['fields'] as $name => $config ) {
-
-            if( in_array($name, self::EXCLUDE_FIELDS) ) {
-                continue;
-            }
-
-            if( empty($config['inputType']) || !in_array($config['inputType'], ['text', 'textarea', 'inputUnit', 'optionWizard', 'listWizard', 'keyValueWizard']) ) {
-                continue;
-            }
-
-            if( !empty($config['eval']['rgxp']) || ($config['eval']['rte']??'') === 'ace' ) {
-                continue;
-            }
-
+        foreach( array_keys($this->fieldClassifier->getTranslatableFields($dc->table)) as $name ) {
             $GLOBALS['TL_DCA'][$dc->table]['fields'][$name]['xlabel'][] = [self::class, 'addButton'];
         }
     }

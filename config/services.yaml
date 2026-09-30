@@ -30,6 +30,7 @@ services:
             - '%contao.backend.route_prefix%'
             - !tagged_iterator numero2.deepl_language_resolver
             - '@monolog.logger.contao.error'
+            - '@numero2\DeepLBundle\Translation\TranslatableFieldClassifier'
 
     numero2\DeepLBundle\EventListener\LoadDataContainerListener:
         arguments:
@@ -48,6 +49,19 @@ services:
             - '@contao.routing.scope_matcher'
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
+
+
+    numero2\DeepLBundle\Translation\TranslatableFieldClassifier:
+        arguments:
+            - '%contao.deepl.fields%'
+
+
+    numero2\DeepLBundle\Command\DebugFieldsCommand:
+        arguments:
+            - '@contao.framework'
+            - '@numero2\DeepLBundle\Translation\TranslatableFieldClassifier'
+            - !tagged_iterator numero2.deepl_language_resolver
+            - '@database_connection'
 
 
     numero2\DeepLBundle\LanguageResolver\:

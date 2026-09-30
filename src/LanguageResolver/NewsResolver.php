@@ -19,7 +19,7 @@ use Contao\NewsBundle\ContaoNewsBundle;
 use Contao\NewsModel;
 
 
-class NewsResolver extends DefaultResolver {
+class NewsResolver extends DefaultResolver implements TableAwareResolverInterface {
 
 
     public function supports( DataContainer $dc ): bool {
@@ -41,6 +41,23 @@ class NewsResolver extends DefaultResolver {
         }
 
         return false;
+    }
+
+
+    /**
+     * {@inheritdoc}
+     */
+    public function supportsTable( string $table, ?string $parentTable=null ): bool {
+
+        if( !class_exists(ContaoNewsBundle::class) ) {
+            return false;
+        }
+
+        if( $table === ContentModel::getTable() ) {
+            return $parentTable === null || $parentTable === NewsModel::getTable();
+        }
+
+        return in_array($table, [NewsArchiveModel::getTable(), NewsModel::getTable()], true);
     }
 
 

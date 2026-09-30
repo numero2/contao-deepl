@@ -79,6 +79,51 @@ After installation, each field that can be translated will display a small DeepL
 
 💡 **Hint:** You can also translate all fields at once by pressing `ALT+T` on Windows or `Option+T` on Mac.
 
+### Which fields are translated
+
+A button needs a target language first. It is determined by a *language
+resolver* from the page tree the record belongs to. The bundled resolvers cover
+pages, articles, forms, news and events, including their content elements.
+Records of other extensions that have no link to a page (a store locator, for
+instance) get no button at all until a resolver for them is registered: a
+service implementing `LanguageResolverInterface`, picked up automatically.
+
+Within a table that has a resolver, whether a field gets a translation button
+is derived from its DCA, so fields of other extensions are handled the same way
+as core fields. The first rule that applies wins:
+c
+
+```
+deepl:
+    fields:
+        tl_content.embed: false       # never translate
+        tl_form_field.value: true     # translate, although excluded by default
+        '*.subheadline': false        # never translate, in any table
+```
+
+If you maintain an extension, mark a field in its DCA instead:
+
+```php
+$GLOBALS['TL_DCA']['tl_my_table']['fields']['token']['translate'] = false;
+$GLOBALS['TL_DCA']['tl_my_table']['fields']['label']['translate'] = true;
+```
+
+To see what is offered for translation and why, run:
+
+```
+vendor/bin/contao-console debug:deepl-fields tl_content
+```
+
+Without a table name it lists all tables supported out of the box; `--all`
+also shows the fields skipped for their input type.
+
+The command first checks whether a language resolver handles the table. If
+none does, it warns instead of listing fields, since no button would appear
+anyway. For `tl_content` it also lists every parent table found in the database
+and whether content below it can be resolved. To make your own resolver show
+up there, also implement `TableAwareResolverInterface` and declare its tables
+in `supportsTable()`; resolvers without it are reported as "unknown".
+
 ## Supported bundles
 
 This extension supports the following Contao bundles:

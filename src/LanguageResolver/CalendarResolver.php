@@ -19,7 +19,7 @@ use Contao\ContentModel;
 use Contao\DataContainer;
 
 
-class CalendarResolver extends DefaultResolver {
+class CalendarResolver extends DefaultResolver implements TableAwareResolverInterface {
 
 
     public function supports( DataContainer $dc ): bool {
@@ -41,6 +41,23 @@ class CalendarResolver extends DefaultResolver {
         }
 
         return false;
+    }
+
+
+    /**
+     * {@inheritdoc}
+     */
+    public function supportsTable( string $table, ?string $parentTable=null ): bool {
+
+        if( !class_exists(ContaoCalendarBundle::class) ) {
+            return false;
+        }
+
+        if( $table === ContentModel::getTable() ) {
+            return $parentTable === null || $parentTable === CalendarEventsModel::getTable();
+        }
+
+        return in_array($table, [CalendarModel::getTable(), CalendarEventsModel::getTable()], true);
     }
 
 
