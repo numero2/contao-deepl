@@ -42,6 +42,8 @@ class DeepLExtension extends Extension implements PrependExtensionInterface {
 
         $container->setParameter('contao.deepl.api_key', $config['api_key']);
         $container->setParameter('contao.deepl.pref_lang', $config['pref_lang']);
+        $container->setParameter('contao.deepl.source_lang', $config['source_lang']);
+        $container->setParameter('contao.deepl.glossaries', $config['glossaries']);
 
         $container
             ->registerForAutoconfiguration(LanguageResolverInterface::class)

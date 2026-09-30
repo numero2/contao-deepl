@@ -11,6 +11,8 @@ services:
             - '%contao.deepl.api_key%'
             - '@numero2_deepl.cache'
             - '@monolog.logger.contao.error'
+            - '%contao.deepl.source_lang%'
+            - '%contao.deepl.glossaries%'
 
 
     numero2\DeepLBundle\Controller\BackendController:
