@@ -28,7 +28,7 @@ class NewsResolver extends DefaultResolver implements TableAwareResolverInterfac
             return false;
         }
 
-        if( ($dc->table === ContentModel::getTable() && $this->findRootParentForContent((new ContentModel())->setRow($dc->getCurrentRecord()))::class === NewsModel::class) || $dc->table === NewsArchiveModel::getTable() ) {
+        if( ($dc->table === ContentModel::getTable() && ($currentRecord = $dc->getCurrentRecord()) && $this->findRootParentForContent((new ContentModel())->setRow($currentRecord))::class === NewsModel::class) || $dc->table === NewsArchiveModel::getTable() ) {
             return true;
         }
 
