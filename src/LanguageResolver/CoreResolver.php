@@ -25,7 +25,7 @@ class CoreResolver extends DefaultResolver implements TableAwareResolverInterfac
 
     public function supports( DataContainer $dc ): bool {
 
-        if( ($dc->table === ContentModel::getTable() && $this->findRootParentForContent((new ContentModel())->setRow($dc->getCurrentRecord()))::class === ArticleModel::class) || in_array($dc->table, [ArticleModel::getTable(), PageModel::getTable()], true)) {
+        if( ($dc->table === ContentModel::getTable() && ($currentRecord = $dc->getCurrentRecord()) && $this->findRootParentForContent((new ContentModel())->setRow($currentRecord))::class === ArticleModel::class) || in_array($dc->table, [ArticleModel::getTable(), PageModel::getTable()], true)) {
 
             return true;
 
